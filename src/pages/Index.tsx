@@ -116,7 +116,7 @@ const Index = () => {
     score = Math.min(95, Math.max(20, Math.round(score)));
 
     // Generate AI analysis
-    const geminiResult = await generateCompatibilityWithGemini(profile1, profile2, score);
+    const geminiResult = await generateCompatibilityWithGemini(profile1, profile2);
 
     return {
       score,
