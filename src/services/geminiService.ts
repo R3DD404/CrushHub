@@ -18,9 +18,9 @@ interface GeminiResponse {
 
 export const generateCompatibilityWithGemini = async (
   profile1: any,
-  profile2: any
+  profile2: any,
+  score: number
 ): Promise<{
-  score: number;
   roast: string;
   verdict: string;
 }> => {
@@ -30,63 +30,41 @@ export const generateCompatibilityWithGemini = async (
     throw new Error('Gemini API key not found. Please set VITE_GEMINI_API_KEY in your environment variables.');
   }
 
-  // Check if it's the same person
-  if (profile1.username.toLowerCase() === profile2.username.toLowerCase()) {
-    const selfLoveMessages = [
-      "Looks like someone's got a serious case of self-love... at least your repos match perfectly!",
-      "10/10 would recommend dating yourself, your bio already knows all your flaws",
-      "Your biggest competition in love is... yourself. That's actually kinda deep.",
-      "Plot twist: you ARE the crush. Self-love era activated!",
-      "Found your perfect match... it's you. Your bio doesn't lie."
-    ];
-    
-    const selfLoveVerdicts = [
-      "Ultimate self-love",
-      "You + You = Perfection",
-      "Solo dev forever",
-      "Self-shipped successfully"
-    ];
+  const sharedLanguages = profile1.topLanguages.filter((lang: string) => profile2.topLanguages.includes(lang));
+  const tone = score >= 80 ? "romantic and dreamy" : score >= 50 ? "playful and flirty" : "sassy and roasty";
 
-    return {
-      score: Math.floor(Math.random() * 20) + 80,
-      roast: selfLoveMessages[Math.floor(Math.random() * selfLoveMessages.length)],
-      verdict: selfLoveVerdicts[Math.floor(Math.random() * selfLoveVerdicts.length)]
-    };
-  }
+  const prompt = `You're a ${tone} AI analyzing GitHub compatibility for CrushHub. Be HILARIOUS, FLIRTY, and ROASTY. Use the score to guide the tone of your response. Make it SHAREABLE and something users will laugh at and blush over.
 
-  const prompt = `You're a savage but playful developer roasting GitHub compatibility. Be HILARIOUS, ROASTY, and make people laugh out loud. This needs to be SHAREABLE content that'll make people tag their friends.
-
-User: ${profile1.username} (${profile1.topLanguages.slice(0,2).join(', ') || 'no languages'}) - ${profile1.publicRepos} repos, ${profile1.followers} followers
+User: ${profile1.username} (${profile1.topLanguages.slice(0, 2).join(', ') || 'no languages'}) - ${profile1.publicRepos} repos, ${profile1.followers} followers
 Bio: "${profile1.bio || 'No bio provided'}"
 
-Crush: ${profile2.username} (${profile2.topLanguages.slice(0,2).join(', ') || 'no languages'}) - ${profile2.publicRepos} repos, ${profile2.followers} followers  
+Crush: ${profile2.username} (${profile2.topLanguages.slice(0, 2).join(', ') || 'no languages'}) - ${profile2.publicRepos} repos, ${profile2.followers} followers  
 Bio: "${profile2.bio || 'No bio provided'}"
 
-Shared languages: ${profile1.topLanguages.filter((lang: string) => profile2.topLanguages.includes(lang)).join(', ') || 'none'}
+Compatibility factors:
+- Shared languages: ${sharedLanguages.join(', ') || 'none'}
+- Compatibility score: ${score}
 
 Generate EXACTLY this JSON format:
 {
-  "score": [1-100 number based on shared languages, bio compatibility, repo count, followers],
-  "roast": "[SAVAGE but funny one-liner about their coding relationship, max 15 words]",
-  "verdict": "[HILARIOUS conclusion that'll make people screenshot this, max 6 words]"
+  "roast": "[Flirty, romantic, or roasty one-liner about their coding chemistry, max 15 words]",
+  "verdict": "[Hilarious and shareable conclusion, max 6 words]"
 }
 
-ROAST EXAMPLES to inspire you (don't copy exactly):
-- "Your bios say more about compatibility than your dating profiles ever could"
-- "They code in Python, you code in JavaScript... this is doomed from the start"
-- "One says 'coffee lover', other says 'tea enthusiast'... irreconcilable differences"
-- "Your bios have better chemistry than most couples"
-- "Bio says 'dog person', theirs says 'cat person'... it's complicated"
+ROAST EXAMPLES:
+- "Your repos are a match made in GitHub heaven!"
+- "Shared languages? Sparks are flying already!"
+- "Your bios vibe like a late-night commit."
+- "One says 'night owl', the other 'early bird'... opposites attract, right?"
 
 VERDICT EXAMPLES:
 - "Merge conflicts incoming"
-- "Git commit to each other"
+- "Pull request accepted"
 - "Syntax error in love"
-- "Code review needed"
-- "Push notifications only"
-- "Bio compatibility error"
+- "Code review approved"
+- "Hot repo romance"
 
-Make it SPICY, FUNNY, and something people will want to share immediately. Roast their coding habits, compare their tech stacks, joke about their bios vs real life. Make it go viral!`;
+Make it SPICY, FUNNY, and tailored to the score.`;
 
   const requestBody: GeminiRequest = {
     contents: [
@@ -130,34 +108,30 @@ Make it SPICY, FUNNY, and something people will want to share immediately. Roast
     }
 
     const result = JSON.parse(jsonMatch[0]);
-    
+
     return {
-      score: Math.min(100, Math.max(1, result.score)),
-      roast: result.roast || "Two developers walk into a repo...",
-      verdict: result.verdict || "It's complicated"
+      roast: result.roast || "Your code’s got us hot and bothered!",
+      verdict: result.verdict || "Steamy commit vibes"
     };
   } catch (error) {
     console.error('Gemini API Error:', error);
-    
-    // Funnier fallback responses based on bios
+
+    // Fallback responses
     const fallbackResponses = [
       {
-        score: Math.floor(Math.random() * 50) + 30,
-        roast: "Even AI gave up trying to figure out this bio combination",
-        verdict: "System crash detected"
+        roast: "Your repos are sparking some heat!",
+        verdict: "Code’s too hot"
       },
       {
-        score: Math.floor(Math.random() * 40) + 40,
-        roast: "Your bios are more compatible than your code styles",
-        verdict: "404: Love not found"
+        roast: "GitHub’s blushing at your sexy code!",
+        verdict: "Passionate repo match"
       },
       {
-        score: Math.floor(Math.random() * 60) + 20,
-        roast: "AI short-circuited analyzing these bio vibes",
-        verdict: "Debug mode activated"
+        roast: "Your profiles scream late-night coding sessions!",
+        verdict: "Steamy syntax vibes"
       }
     ];
-    
+
     return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
   }
 };
