@@ -78,8 +78,7 @@ const Index = () => {
       profile2.topLanguages.includes(lang)
     );
 
-    // Enhanced compatibility calculation
-    let score = 50; // Base score for everyone to have decent chances
+    let score = 30; // Base score for everyone to have decent chances
 
     // Language compatibility (30% weight)
     const languageScore = Math.min(30, sharedLanguages.length * 10);
@@ -88,33 +87,33 @@ const Index = () => {
     // Follower similarity (20% weight)
     const followerDiff = Math.abs(profile1.followers - profile2.followers);
     const maxFollowers = Math.max(profile1.followers, profile2.followers);
-    const followerSimilarity = maxFollowers === 0 ? 20 : Math.max(0, 20 - (followerDiff / maxFollowers) * 20);
+    const followerSimilarity = maxFollowers === 0 ? 10 : Math.max(0, 20 - (followerDiff / maxFollowers) * 20);
     score += followerSimilarity;
 
     // Repository similarity (15% weight)
     const repoDiff = Math.abs(profile1.publicRepos - profile2.publicRepos);
     const maxRepos = Math.max(profile1.publicRepos, profile2.publicRepos);
-    const repoSimilarity = maxRepos === 0 ? 15 : Math.max(0, 15 - (repoDiff / maxRepos) * 15);
+    const repoSimilarity = maxRepos === 0 ? 5 : Math.max(0, 15 - (repoDiff / maxRepos) * 15);
     score += repoSimilarity;
 
-    // Bio compatibility (10% weight) - both having bios or both not having bios
+    // Bio compatibility (10% weight)
     const bothHaveBios = profile1.bio && profile2.bio;
     const neitherHasBio = !profile1.bio && !profile2.bio;
     if (bothHaveBios || neitherHasBio) {
-      score += 10;
+      score += 5;
     }
 
-    // Activity bonus (10% weight) - both being active developers
+    // Activity bonus (10% weight)
     if (profile1.publicRepos > 0 && profile2.publicRepos > 0) {
-      score += 10;
+      score += 5;
     }
 
-    // Random factor for fun (15% weight)
-    const randomBonus = Math.random() * 15;
+    // Random factor for fun (10% weight)
+    const randomBonus = Math.random() * 10;
     score += randomBonus;
 
-    // Ensure score is between 1 and 100
-    score = Math.min(100, Math.max(1, Math.round(score)));
+    // Ensure score is between 20 and 95 for more realistic results
+    score = Math.min(95, Math.max(20, Math.round(score)));
 
     // Generate AI analysis
     const geminiResult = await generateCompatibilityWithGemini(profile1, profile2);

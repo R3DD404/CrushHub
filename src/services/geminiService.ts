@@ -1,4 +1,3 @@
-
 interface GeminiRequest {
   contents: {
     parts: {
@@ -43,7 +42,7 @@ export const generateCompatibilityWithGemini = async (
     
     const selfLoveVerdicts = [
       "Ultimate self-love",
-      "You + You = Perfection", 
+      "You + You = Perfection",
       "Solo dev forever",
       "Self-shipped successfully"
     ];
@@ -55,12 +54,7 @@ export const generateCompatibilityWithGemini = async (
     };
   }
 
-  const sharedLanguages = profile1.topLanguages.filter((lang: string) => profile2.topLanguages.includes(lang));
-  const followerSimilarity = Math.abs(profile1.followers - profile2.followers) <= Math.max(profile1.followers, profile2.followers) * 0.5;
-  const repoSimilarity = Math.abs(profile1.publicRepos - profile2.publicRepos) <= Math.max(profile1.publicRepos, profile2.publicRepos) * 0.5;
-  const bothHaveBios = profile1.bio && profile2.bio;
-
-  const prompt = `You're a savage but playful developer roasting GitHub compatibility. Be HILARIOUS, ROASTY, and make people laugh out loud. This needs to be SHAREABLE content that'll make people tag their friends. Focus on making users feel laygh about their match.
+  const prompt = `You're a savage but playful developer roasting GitHub compatibility. Be HILARIOUS, ROASTY, and make people laugh out loud. This needs to be SHAREABLE content that'll make people tag their friends.
 
 User: ${profile1.username} (${profile1.topLanguages.slice(0,2).join(', ') || 'no languages'}) - ${profile1.publicRepos} repos, ${profile1.followers} followers
 Bio: "${profile1.bio || 'No bio provided'}"
@@ -68,35 +62,31 @@ Bio: "${profile1.bio || 'No bio provided'}"
 Crush: ${profile2.username} (${profile2.topLanguages.slice(0,2).join(', ') || 'no languages'}) - ${profile2.publicRepos} repos, ${profile2.followers} followers  
 Bio: "${profile2.bio || 'No bio provided'}"
 
-Compatibility factors:
-- Shared languages: ${sharedLanguages.join(', ') || 'none'}
-- Similar follower count: ${followerSimilarity ? 'Yes' : 'No'}
-- Similar repo count: ${repoSimilarity ? 'Yes' : 'No'}
-- Both have bios: ${bothHaveBios ? 'Yes' : 'No'}
+Shared languages: ${profile1.topLanguages.filter((lang: string) => profile2.topLanguages.includes(lang)).join(', ') || 'none'}
 
 Generate EXACTLY this JSON format:
 {
-  "score": [20-95 range -  People want to laugh],
+  "score": [1-100 number based on shared languages, bio compatibility, repo count, followers],
   "roast": "[SAVAGE but funny one-liner about their coding relationship, max 15 words]",
   "verdict": "[HILARIOUS conclusion that'll make people screenshot this, max 6 words]"
 }
 
 ROAST EXAMPLES to inspire you (don't copy exactly):
-- "Your repos have better chemistry than most dating apps"
-- "Both code in JavaScript... this is either perfect or a disaster"
-- "Similar follower count means you're equally unpopular, perfect match!"
-- "Your bios are more compatible than your commit schedules"
-- "One has a bio, other doesn't... opposites attract in coding too"
+- "Your bios say more about compatibility than your dating profiles ever could"
+- "They code in Python, you code in JavaScript... this is doomed from the start"
+- "One says 'coffee lover', other says 'tea enthusiast'... irreconcilable differences"
+- "Your bios have better chemistry than most couples"
+- "Bio says 'dog person', theirs says 'cat person'... it's complicated"
 
 VERDICT EXAMPLES:
 - "Merge conflicts incoming"
 - "Git commit to each other"
 - "Syntax error in love"
-- "Code review approved"
-- "Pull request accepted"
-- "Repository compatibility confirmed"
+- "Code review needed"
+- "Push notifications only"
+- "Bio compatibility error"
 
-Make it SPICY, FUNNY, ROAST and something people will want to share immediately. We want people to laugh  and share their results!`;
+Make it SPICY, FUNNY, and something people will want to share immediately. Roast their coding habits, compare their tech stacks, joke about their bios vs real life. Make it go viral!`;
 
   const requestBody: GeminiRequest = {
     contents: [
@@ -142,29 +132,29 @@ Make it SPICY, FUNNY, ROAST and something people will want to share immediately.
     const result = JSON.parse(jsonMatch[0]);
     
     return {
-      score: Math.min(100, Math.max(20, result.score)), // Ensure generous range
+      score: Math.min(100, Math.max(1, result.score)),
       roast: result.roast || "Two developers walk into a repo...",
       verdict: result.verdict || "It's complicated"
     };
   } catch (error) {
     console.error('Gemini API Error:', error);
     
-    // More generous fallback responses
+    // Funnier fallback responses based on bios
     const fallbackResponses = [
       {
-        score: Math.floor(Math.random() * 25) + 70,
-        roast: "Even AI thinks your repos are meant to be together",
-        verdict: "Code chemistry confirmed"
+        score: Math.floor(Math.random() * 50) + 30,
+        roast: "Even AI gave up trying to figure out this bio combination",
+        verdict: "System crash detected"
       },
       {
-        score: Math.floor(Math.random() * 20) + 75,
-        roast: "Your GitHub profiles have better compatibility than most apps",
-        verdict: "Repository match made"
+        score: Math.floor(Math.random() * 40) + 40,
+        roast: "Your bios are more compatible than your code styles",
+        verdict: "404: Love not found"
       },
       {
-        score: Math.floor(Math.random() * 30) + 65,
-        roast: "AI crashed trying to compute this much coding chemistry",
-        verdict: "System overload detected"
+        score: Math.floor(Math.random() * 60) + 20,
+        roast: "AI short-circuited analyzing these bio vibes",
+        verdict: "Debug mode activated"
       }
     ];
     
