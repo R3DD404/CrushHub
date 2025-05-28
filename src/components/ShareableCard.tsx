@@ -51,14 +51,14 @@
 
             // Wait a bit then open Twitter
             setTimeout(() => {
-              const tweetText = `${results.profile1.username} + ${results.profile2.username} = ${results.score}%\n\n"${results.roast}"\n\nCheck yours at crushhub.app`;
+              const tweetText = `${results.profile1.username} + ${results.profile2.username} = ${results.score}%\n\n"${results.roast}"\n\nCheck yours at crushub-sigma.vercel.app`;
               const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
               window.open(tweetUrl, '_blank');
             }, 2000);
           } catch (clipboardError) {
             console.error('Clipboard error:', clipboardError);
             // Fallback to just opening Twitter
-            const tweetText = `${results.profile1.username} + ${results.profile2.username} = ${results.score}%\n\n"${results.roast}"\n\nCheck yours at crushhub.app`;
+            const tweetText = `${results.profile1.username} + ${results.profile2.username} = ${results.score}%\n\n"${results.roast}"\n\nCheck yours at crushub-sigma.vercel.app`;
             const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
             window.open(tweetUrl, '_blank');
             
@@ -71,7 +71,7 @@
       } catch (error) {
         console.error('Error generating card:', error);
         // Fallback to text-only sharing
-        const tweetText = `${results.profile1.username} + ${results.profile2.username} = ${results.score}%\n\n"${results.roast}"\n\nCheck yours at crushhub.app`;
+        const tweetText = `${results.profile1.username} + ${results.profile2.username} = ${results.score}%\n\n"${results.roast}"\n\nCheck yours at crushub-sigma.vercel.app`;
         const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
         window.open(tweetUrl, '_blank');
         
@@ -171,7 +171,7 @@
               {/* Bottom website URL */}
               <div className="flex items-center justify-between">  {/* Changed from justify-center to justify-between */}
   <div className="text-xs text-slate-400 font-medium">
-    crushhub.app
+    crushub-sigma.vercel.app
   </div>
   <div className="text-xs text-slate-500 font-medium">
     made by @R3DD404
